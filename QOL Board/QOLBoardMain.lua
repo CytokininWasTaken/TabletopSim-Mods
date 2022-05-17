@@ -1,4 +1,4 @@
-local version = "[@1.0.0@]"
+local version = "[@1.1.0@]"
 
 --fat script section!!
 
@@ -1076,7 +1076,6 @@ trackerObjScript = {
 --
 
 function getVersion(inp)
-  print(inp)
   return inp:match("%[@(.-)%@]")
 end
 
@@ -1086,8 +1085,12 @@ function handle(get)
   liveQueue = get.text
 end
 
+function updateBoard()
+  self.setLuaScript(liveQueue)
+end
+
 function getUpdateScript()
-  WebRequest.get("https://cytokininwastaken.github.io/",handle)
+  WebRequest.get("https://raw.githubusercontent.com/CytokininWasTaken/TabletopSim-Mods/main/QOL%20Board/QOLBoardMain.lua",handle)
   Wait.frames(function() checkForUpdate(liveQueue) end, 60)
 end
 
@@ -1096,10 +1099,10 @@ function checkForUpdate(text)
   local live = text
   local liveVersion = getVersion(live)
   if current ~= liveVersion and liveVersion then
-    self.setLuaScript(live)
-    self.reload()
+    if not self.hasTag("Update Available") then
+      self.addContextMenuItem("Update QOL Board", updateBoard)
+    end
   end
-  print("checked")
 end
 
 function facingUp(object)
